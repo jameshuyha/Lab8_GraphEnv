@@ -12,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 
 /**
  * FXML Controller class
@@ -65,28 +66,42 @@ public class PainterController implements Initializable {
         largeRadioButton.setUserData(PenSize.LARGE);
     }
 
+    // Modifies brush color based on radio button input
     @FXML
     private void colorRadioButtonSelected(ActionEvent event) {
-        
+        brushColor = (Color) colorToggleGroup.getSelectedToggle().getUserData();
     }
 
+    // Modifies pen size based on radio button input
     @FXML
     private void sizeRadioButtonSelected(ActionEvent event) {
+        radius = (PenSize) sizeToggleGroup.getSelectedToggle().getUserData();
     }
 
+    // Undoes last brush circle
     @FXML
     private void undoButtonPressed(ActionEvent event) {
+        if (!drawingAreaPane.getChildren().isEmpty()) {
+            drawingAreaPane.getChildren().removeLast();
+        }
     }
 
+    // Clears all brush circles
     @FXML
     private void clearButtonPressed(ActionEvent event) {
+        drawingAreaPane.getChildren().clear();
     }
 
+    // Creates brush circle when mouse dragged
     @FXML
     private void drawingAreaMouseDragged(MouseEvent event) {
-        
+        if (event.getX() > radius.getRadius()) {
+            Circle circle = new Circle(event.getX(), event.getY(), radius.getRadius(), brushColor);
+            drawingAreaPane.getChildren().add(circle);
+        }
     }
 
+    // Enum that determines radius of circle
     private enum PenSize {
         SMALL(2),
         MEDIUM(4),
